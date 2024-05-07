@@ -8,8 +8,10 @@ import datetime
 
 def process_blf(input_path, output_path):
     try:
+        script_dir = os.path.dirname(os.path.realpath(__file__))
+
         # Provide database .dbc and .ini folder location
-        db = cd.load_dbc("BOLTVS_Ch1_Rev2")
+        db = cd.load_dbc(f"{script_dir}\\BOLTVS_Ch1_Rev2")
 
         # Provide file path without extension
         log_data = cd.from_file(db, input_path)
