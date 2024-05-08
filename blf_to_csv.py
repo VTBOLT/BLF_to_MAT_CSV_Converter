@@ -1,10 +1,13 @@
 import tkinter as tk
 from tkinter import filedialog
+from PIL import Image, ImageTk
 
 import os
 import candas as cd
 import scipy.io
 import datetime
+
+script_dir = os.path.dirname(os.path.realpath(__file__))
 
 def process_blf(input_path, output_path):
     try:
@@ -95,40 +98,65 @@ def get_default_download_path():
     default_download_path = os.path.join(home_dir, "Downloads")
     return default_download_path
 
+def resize_with_height(image_path, new_height):
+    # Open the image
+    img = Image.open(image_path)
+
+    # Calculate the aspect ratio
+    width_percent = new_height / float(img.size[1])
+    new_width = int(float(img.size[0]) * width_percent)
+
+    # Resize the image while maintaining the aspect ratio
+    resized_img = img.resize((new_width, new_height))
+    
+    return resized_img
+
 # Create the main window
 root = tk.Tk()
-root.title("BLF Processing Tool")
+root.title("BOLT BLF Processing Tool")
+
+# Load logo image
+logo_img = resize_with_height(f"{script_dir}\\bolt_logo.png", 100)
+logo_img = ImageTk.PhotoImage(logo_img)
+
+# Create logo label
+logo_label = tk.Label(root, image=logo_img)
+logo_label.grid(row=0, column=0, columnspan=3, padx=5, pady=5)
 
 # Create input file selection
 input_label = tk.Label(root, text="Input BLF File:")
-input_label.grid(row=0, column=0, padx=5, pady=5)
+input_label.grid(row=1, column=0, padx=5, pady=5)
 
 input_entry = tk.Entry(root, width=50)
-input_entry.grid(row=0, column=1, padx=5, pady=5)
+input_entry.grid(row=1, column=1, padx=5, pady=5)
 
 input_button = tk.Button(root, text="Browse", command=browse_input_file)
-input_button.grid(row=0, column=2, padx=5, pady=5)
+input_button.grid(row=1, column=2, padx=5, pady=5)
 
 # Create output folder selection
 output_label = tk.Label(root, text="Output Folder:")
-output_label.grid(row=1, column=0, padx=5, pady=5)
+output_label.grid(row=2, column=0, padx=5, pady=5)
 
 output_entry = tk.Entry(root, width=50)
-output_entry.grid(row=1, column=1, padx=5, pady=5)
+output_entry.grid(row=2, column=1, padx=5, pady=5)
 
 output_path = get_default_download_path()  # Set default output path to Downloads
 output_entry.insert(0, output_path)  # Insert default output path into the entry field
 
 output_button = tk.Button(root, text="Browse", command=browse_output_folder)
-output_button.grid(row=1, column=2, padx=5, pady=5)
+output_button.grid(row=2, column=2, padx=5, pady=5)
 
 # Create process button
 process_button = tk.Button(root, text="Process", command=process_files)
-process_button.grid(row=2, column=1, padx=5, pady=10)
+process_button.grid(row=3, column=1, padx=5, pady=10)
 
 # Create message label
 message_label = tk.Label(root, text="", fg="black")
-message_label.grid(row=3, column=1, padx=5, pady=5)
+message_label.grid(row=4, column=1, padx=5, pady=5)
 
 # Run the Tkinter event loop
 root.mainloop()
+
+
+
+
