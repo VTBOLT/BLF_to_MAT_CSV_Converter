@@ -3,8 +3,7 @@ BLF to MAT file conversion using Python
 
 Just run the .py file.
 
-Requires the following packages:
-- tk
+Requires the following 3rd party packages:
 - candas
 - scipy
 
