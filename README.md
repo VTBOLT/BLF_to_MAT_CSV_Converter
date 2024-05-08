@@ -6,6 +6,7 @@ Just run the .py file.
 Requires the following 3rd party packages:
 - candas
 - scipy
+- Pillow
 
 Just run `py -m pip install <package>` to install
   
