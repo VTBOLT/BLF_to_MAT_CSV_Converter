@@ -9,18 +9,22 @@ BLF to MAT (and now CSV!) file conversion using Python
 
 ## On Windows:
 Download python 3.11 online, then: <br>
-Open up command prompt in the project directory: (might have to use 'py' instead of 'python')
+Open up command prompt: (might have to use 'py' instead of 'python')
 ```
+git clone https://github.com/VTBOLT/BLF_to_MAT_CSV_Converter
+cd BLF_to_MAT_CSV_Converter
 python -m venv converter-venv
 ./converter-venv/Scripts/activate.bat
 pip install -r requirements.txt
 python blf_to_csv.py 
 ```
 ## On Linux:
-Open up your preferred shell in the project directory:
+Open up your preferred shell:
 ```
 sudo apt install python3
 sudo apt install python3-venv
+git clone https://github.com/VTBOLT/BLF_to_MAT_CSV_Converter
+cd BLF_to_MAT_CSV_Converter
 python3 -m venv converter-venv
 source ./converter-venv/bin/activate
 pip install -r requirements.txt
