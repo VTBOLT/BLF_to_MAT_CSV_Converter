@@ -90,6 +90,7 @@ def process_blf(input_path, output_path):
 
         # Provide file path without extension
         log_data = cd.from_file(db, input_path)
+        print("ID errors are non-critical, it just means your .dbc file does contain those IDs.")
 
         # Signals can be accessed like this
         # print(log_data["Pack_Voltage"])
@@ -122,8 +123,8 @@ def process_blf(input_path, output_path):
         local_dt = datetime.datetime.fromtimestamp(min_epoch_utc)
         date_time_string = local_dt.strftime("%I:%M:%S %p %Z on %m/%d/%Y ")
         duration_string = str(datetime.timedelta(seconds=duration_seconds))
-        print(f'First was datapoint at (H:M:S): {date_time_string}')
-        print(f'Data duration: {duration_string}')
+        print(f'First datapoint was at: {date_time_string}')
+        print(f'Data duration (H:M:S): {duration_string}')
 
         # change start times
         for key, data_points in mat.items():
@@ -134,7 +135,7 @@ def process_blf(input_path, output_path):
         print("Saving output .mat file...")
         input_file_name = os.path.basename(input_path)
         scipy.io.savemat(f'{output_path}\\{input_file_name}_seconds.mat', mat)
-        print("Finished saving.")
+        print("Finished saving mat.")
 
         '''
         CSV File Editing
@@ -145,6 +146,7 @@ def process_blf(input_path, output_path):
             log_data, min_epoch_utc)
         interpolated_log_data_seconds = interpolate(log_data_seconds, timestep, duration_seconds)
         save_dict_to_csv(interpolated_log_data_seconds, f'{output_path}\\{input_file_name}_{timestep}ms_interp.csv')
+        print("Finished saving csv.")
         # END CSV
 
         # Process succeeded
