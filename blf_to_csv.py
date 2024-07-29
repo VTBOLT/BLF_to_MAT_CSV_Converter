@@ -90,7 +90,7 @@ def process_blf(input_path, output_path):
 
         # Provide file path without extension
         log_data = cd.from_file(db, input_path)
-        print("ID errors are non-critical, it just means your .dbc file does contain those IDs.")
+        print("ID errors are non-critical, it just means your .dbc file doesn't contain those IDs.")
 
         # Signals can be accessed like this
         # print(log_data["Pack_Voltage"])
