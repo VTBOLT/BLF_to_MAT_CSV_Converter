@@ -14,7 +14,7 @@ import math
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 
-timestep = 10 # millisecond step for interpolation (only affects CSV)
+timestep = 10  # millisecond step for interpolation (only affects CSV)
 
 
 '''
@@ -44,9 +44,14 @@ def to_float(value):
         return float(value)
 
 
-def interpolate(data_dict, step_size_ms, max_time):
+def interpolate(data_dict, step_size_ms, duration, min_time):
     '''
     Function to interpolate data to X(integer) ms steps
+
+    :param data_dict: dictionary containing dataset
+    :step_size_ms: milliseconds per step you would like to interpolate the data to
+    :duration: duration of dataset in seconds
+    :min_time: minimum epoch of dataset
 
     Puts into the format:
     {
@@ -56,25 +61,30 @@ def interpolate(data_dict, step_size_ms, max_time):
     }
     '''
     interpolated_data = {}
-    new_time = np.arange(0, math.floor(max_time), step_size_ms/1000)
+    new_time = np.arange(0, math.floor(duration), step_size_ms/1000)
     interpolated_data["Time[s]"] = new_time
 
     for signal, values in data_dict.items():
         # print(signal)
-        old_time = np.array([to_float(item[0]) for item in values], dtype=np.float64)
-        signal_value = np.array([to_float(item[1]) for item in values], dtype=np.float64)
+        old_time = np.array([to_float(item[0])
+                            for item in values], dtype=np.float64)
+        signal_value = np.array([to_float(item[1])
+                                for item in values], dtype=np.float64)
         interpolated_data[signal] = np.interp(new_time, old_time, signal_value)
 
+    interpolated_data["epoch"] = interpolated_data["Time[s]"] + min_time
+
     return interpolated_data
+
 
 def save_dict_to_csv(data_dict, filename):
     with open(filename, mode='w', newline='') as file:
         writer = csv.writer(file)
-        
+
         # Write the header
         headers = list(data_dict.keys())
         writer.writerow(headers)
-        
+
         # Write the rows
         rows = zip(*data_dict.values())
         for row in rows:
@@ -123,7 +133,8 @@ def process_blf(input_path, output_path):
         local_dt = datetime.datetime.fromtimestamp(min_epoch_utc)
         date_time_string = local_dt.strftime("%I:%M:%S %p %Z on %m/%d/%Y ")
         duration_string = str(datetime.timedelta(seconds=duration_seconds))
-        print(f'First datapoint was at: {date_time_string}')
+        print(
+            f'First datapoint was at: {date_time_string} (epoch: {min_epoch_utc})')
         print(f'Data duration (H:M:S): {duration_string}')
 
         # change start times
@@ -137,15 +148,14 @@ def process_blf(input_path, output_path):
         scipy.io.savemat(f'{output_path}\\{input_file_name}_seconds.mat', mat)
         print("Finished saving mat.")
 
-        '''
-        CSV File Editing
-         - Interpolates data to a uniform timestep
-        '''
+        # CSV conversion
         print("Saving output .csv file...")
         log_data_seconds = convert_keys_to_relative_time(
             log_data, min_epoch_utc)
-        interpolated_log_data_seconds = interpolate(log_data_seconds, timestep, duration_seconds)
-        save_dict_to_csv(interpolated_log_data_seconds, f'{output_path}\\{input_file_name}_{timestep}ms_interp.csv')
+        interpolated_log_data_seconds = interpolate(
+            log_data_seconds, timestep, duration_seconds, min_epoch_utc)
+        save_dict_to_csv(interpolated_log_data_seconds,
+                         f'{output_path}\\{input_file_name}_{timestep}ms_interp.csv')
         print("Finished saving csv.")
         # END CSV
 
