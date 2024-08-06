@@ -72,7 +72,7 @@ def interpolate(data_dict, step_size_ms, duration, min_time):
                                 for item in values], dtype=np.float64)
         interpolated_data[signal] = np.interp(new_time, old_time, signal_value)
 
-    interpolated_data["epoch"] = interpolated_data["Time[s]"] + min_time
+    interpolated_data["epoch"] = interpolated_data["Time[s]"] + float(min_time)
 
     return interpolated_data
 
